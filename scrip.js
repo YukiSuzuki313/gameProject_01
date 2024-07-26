@@ -44,21 +44,17 @@ const brockOffsetLeft = 30;
 
 let brocks = [];
 
-for(let i = 0; i < brockColumnCount; i++) {
-    brocks[i] = [];
-    for(let j = 0; j < brockRowCount; j++){
-        brocks[i][j] = {x: 0, y: 0, status: 1};;
-
-        brocks[i][j].x = 0;
-        brocks[i][j].y = 0;
+for(let c = 0; c < brockColumnCount; c++) {
+    brocks[c] = [];
+    for(let r = 0; r < brockRowCount; r++){
+        brocks[c][r] = {x: 0, y: 0, status: 1};
     };
 }
 
 const collisionDetection = () => {
-    for(let i = 0; i < brockColumnCount; i++) {
-        brocks[i] = [];
-        for(let j = 0; j < brockRowCount; j++){
-            let b = brocks[i][j];
+    for(let c = 0; c < brockColumnCount; c++) {
+        for(let r = 0; r < brockRowCount; r++){
+            let b = brocks[c][r];
 
             if(b.status == 1) {
                 if(x > b.x && x < b.x + brockWidth && y > b.y && y < b.y + brockHeight) {
@@ -71,18 +67,17 @@ const collisionDetection = () => {
     }
 }
 
-
-const drawBrock = () => {
-    for(let i = 0; i < brockColumnCount; i++) {
-        for(let j = 0; j < brockRowCount; j++){
+const drawBrocks = () => {
+    for(let c = 0; c < brockColumnCount; c++) {
+        for(let r = 0; r < brockRowCount; r++){
             
-            if(brocks[i][j].status == 1) {
-
-                brocks[i][j].x = 0;
-                brocks[i][j].y = 0;
+            if(brocks[c][r].status == 1) {
             
-                let brocksX = (i * (brockWidth + brockPadding)) + brockOffsetLeft;
-                let brocksY = (j * (brockHeight + brockPadding)) + brockOffsetTop;
+                let brocksX = (c * (brockWidth + brockPadding)) + brockOffsetLeft;
+                let brocksY = (r * (brockHeight + brockPadding)) + brockOffsetTop;
+
+                brocks[c][r].x = brocksX;
+                brocks[c][r].y = brocksY;
 
                 ctx.beginPath();
                 ctx.rect(brocksX, brocksY, brockWidth, brockHeight);
@@ -94,11 +89,8 @@ const drawBrock = () => {
     };
 }
 
-
-
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-
 
 
 //ボール
@@ -125,16 +117,17 @@ const draw = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
-    drawBrock();
+    drawBrocks();
     collisionDetection();
+
 
     //ボールの反射
     if(y + dy < ballRadius) {
         dy = -dy;
     }else if(y + dy > canvas.height - ballRadius ) {
-        alert("Game Over");
+        //alert("Game Over");
         document.location.reload();
-        clearInterval(interval);
+        clearInterval(interval);    
     }
 
     if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
